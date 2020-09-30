@@ -7,210 +7,99 @@ namespace ConsoleTetris.Block
     public class Block
     {
         public Tetris tetris;
-        public BlockHitbox collision;
+        public BlockHitbox hitbox;
         public Cordinate cordinate;
 
         public Block(Tetris tetris)
         {
             this.tetris = tetris;
 
-            collision = tetris.collisions[new System.Random().Next(0, tetris.collisions.Length)];
+            hitbox = tetris.collisions[new System.Random().Next(0, tetris.collisions.Length)];
 
-            cordinate = new Cordinate(new System.Random().Next(0, tetris.lengthX - collision.lengthX + 1), -collision.lengthY + 1);
-
-            return;
-        } // DONE
+            cordinate = new Cordinate(new System.Random().Next(0, tetris.width - hitbox.Width + 1), -hitbox.Height + 1);
+        }
 
         public void Fall()
         {
             for (int n = 0; n < tetris.blocks.Length - 1; n++)
-            {
-                if (cordinate.x <= tetris.blocks[n].cordinate.x + tetris.blocks[n].collision.lengthX - 1 &&
-                    cordinate.x + collision.lengthX - 1 >= tetris.blocks[n].cordinate.x &&
-                    cordinate.y <= tetris.blocks[n].cordinate.y + tetris.blocks[n].collision.lengthY - 1 &&
-                    cordinate.y + collision.lengthY >= tetris.blocks[n].cordinate.y)
-                {
-                    for (int collisionY = 0; collisionY < collision.lengthY; collisionY++)
-                    {
-                        for (int collisionX = 0; collisionX < collision.lengthX; collisionX++)
-                        {
-                            if (collision.collision[collisionY, collisionX] == true)
-                            {
-                                for (int collisionYY = 0; collisionYY < tetris.blocks[n].collision.lengthY; collisionYY++)
-                                {
-                                    for (int collisionXX = 0; collisionXX < tetris.blocks[n].collision.lengthX; collisionXX++)
-                                    {
-                                        if (tetris.blocks[n].collision.collision[collisionYY, collisionXX] == true)
-                                        {
-                                            if (cordinate.x + collisionX == tetris.blocks[n].cordinate.x + collisionXX &&
-                                                cordinate.y + collisionY + 1 == tetris.blocks[n].cordinate.y + collisionYY)
+                if (cordinate.X <= tetris.blocks[n].cordinate.X + tetris.blocks[n].hitbox.Width - 1 &&
+                    cordinate.X + hitbox.Width - 1 >= tetris.blocks[n].cordinate.X &&
+                    cordinate.Y <= tetris.blocks[n].cordinate.Y + tetris.blocks[n].hitbox.Height - 1 &&
+                    cordinate.Y + hitbox.Height >= tetris.blocks[n].cordinate.Y)
+                    for (int hitboxY = 0; hitboxY < hitbox.Height; hitboxY++)
+                        for (int hitboxX = 0; hitboxX < hitbox.Width; hitboxX++)
+                            if (hitbox.hitbox[hitboxY, hitboxX] == true)
+                                for (int hitboxYY = 0; hitboxYY < tetris.blocks[n].hitbox.Height; hitboxYY++)
+                                    for (int hitboxXX = 0; hitboxXX < tetris.blocks[n].hitbox.Width; hitboxXX++)
+                                        if (tetris.blocks[n].hitbox.hitbox[hitboxYY, hitboxXX] == true)
+                                            if (cordinate.X + hitboxX == tetris.blocks[n].cordinate.X + hitboxXX &&
+                                                cordinate.Y + hitboxY + 1 == tetris.blocks[n].cordinate.Y + hitboxYY)
                                             {
                                                 tetris.CreateBlock();
-
                                                 return;
                                             }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
 
-            if (cordinate.y + collision.lengthY - 1 == tetris.lengthY - 1)
+            if (cordinate.Y + hitbox.Height - 1 == tetris.height - 1)
             {
                 tetris.CreateBlock();
-
                 return;
             }
 
-            cordinate.y++;
-
-            return;
-        } // DONE
+            cordinate.Y++;
+        }
 
         public void Move(char input)
         {
-            if (input == 'a')
-            {
-                for (int n = 0; n < tetris.blocks.Length - 1; n++)
-                {
-                    if (cordinate.x - 1 <= tetris.blocks[n].cordinate.x + tetris.blocks[n].collision.lengthX - 1 &&
-                        cordinate.x + collision.lengthX - 1 >= tetris.blocks[n].cordinate.x &&
-                        cordinate.y <= tetris.blocks[n].cordinate.y + tetris.blocks[n].collision.lengthY - 1 &&
-                        cordinate.y + collision.lengthY - 1 >= tetris.blocks[n].cordinate.y)
-                    {
-                        for (int collisionY = 0; collisionY < collision.lengthY; collisionY++)
-                        {
-                            for (int collisionX = 0; collisionX < collision.lengthX; collisionX++)
-                            {
-                                if (collision.collision[collisionY, collisionX] == true)
-                                {
-                                    for (int collisionYY = 0; collisionYY < tetris.blocks[n].collision.lengthY; collisionYY++)
-                                    {
-                                        for (int collisionXX = 0; collisionXX < tetris.blocks[n].collision.lengthX; collisionXX++)
-                                        {
-                                            if (tetris.blocks[n].collision.collision[collisionYY, collisionXX] == true)
-                                            {
-                                                if (cordinate.x + collisionX - 1 == tetris.blocks[n].cordinate.x + collisionXX &&
-                                                    cordinate.y + collisionY == tetris.blocks[n].cordinate.y + collisionYY)
-                                                {
-                                                    return;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+            Dictionary<char, int> dX = new Dictionary<char, int>() { { 'a' , -1 }, { 'd' , 1 } };
 
-                if (cordinate.x != 0)
-                {
-                    cordinate.x--;
-                }
+            for (int n = 0; n < tetris.blocks.Length - 1; n++)
+                if (cordinate.X + dX[input] <= tetris.blocks[n].cordinate.X + tetris.blocks[n].hitbox.Width - 1 &&
+                    cordinate.X + hitbox.Width + dX[input] >= tetris.blocks[n].cordinate.X &&
+                    cordinate.Y <= tetris.blocks[n].cordinate.Y + tetris.blocks[n].hitbox.Height - 1 &&
+                    cordinate.Y + hitbox.Height - 1 >= tetris.blocks[n].cordinate.Y)
+                    for (int hitboxY = 0; hitboxY < hitbox.Height; hitboxY++)
+                        for (int hitboxX = 0; hitboxX < hitbox.Width; hitboxX++)
+                            if (hitbox.hitbox[hitboxY, hitboxX] == true)
+                                for (int hitboxYY = 0; hitboxYY < tetris.blocks[n].hitbox.Height; hitboxYY++)
+                                    for (int hitboxXX = 0; hitboxXX < tetris.blocks[n].hitbox.Width; hitboxXX++)
+                                        if (tetris.blocks[n].hitbox.hitbox[hitboxYY, hitboxXX] == true)
+                                            if (cordinate.X + hitboxX + dX[input] == tetris.blocks[n].cordinate.X + hitboxXX &&
+                                                cordinate.Y + hitboxY == tetris.blocks[n].cordinate.Y + hitboxYY)
+                                                return;
 
-            }
-            else if (input == 'd')
-            {
-                for (int n = 0; n < tetris.blocks.Length - 1; n++)
-                {
-                    if (cordinate.x <= tetris.blocks[n].cordinate.x + tetris.blocks[n].collision.lengthX - 1 &&
-                        cordinate.x + collision.lengthX >= tetris.blocks[n].cordinate.x &&
-                        cordinate.y <= tetris.blocks[n].cordinate.y + tetris.blocks[n].collision.lengthY - 1 &&
-                        cordinate.y + collision.lengthY - 1 >= tetris.blocks[n].cordinate.y)
-                    {
-                        for (int collisionY = 0; collisionY < collision.lengthY; collisionY++)
-                        {
-                            for (int collisionX = 0; collisionX < collision.lengthX; collisionX++)
-                            {
-                                if (collision.collision[collisionY, collisionX] == true)
-                                {
-                                    for (int collisionYY = 0; collisionYY < tetris.blocks[n].collision.lengthY; collisionYY++)
-                                    {
-                                        for (int collisionXX = 0; collisionXX < tetris.blocks[n].collision.lengthX; collisionXX++)
-                                        {
-                                            if (tetris.blocks[n].collision.collision[collisionYY, collisionXX] == true)
-                                            {
-                                                if (cordinate.x + collisionX + 1 == tetris.blocks[n].cordinate.x + collisionXX &&
-                                                    cordinate.y + collisionY == tetris.blocks[n].cordinate.y + collisionYY)
-                                                {
-                                                    return;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (cordinate.x + collision.lengthX != tetris.lengthX)
-                {
-                    cordinate.x++;
-                }
-
-            }
-
-        } // DONE
+            if (cordinate.X + hitbox.Width * (dX[input] + 1) / 2 != tetris.width * (dX[input]+1)/2)
+                cordinate.X += dX[input];
+        }
 
         public void Rotate()
         {
             bool flag = true;
-            BlockHitbox newCollision = new BlockHitbox(collision.lengthX, collision.lengthY);
 
-            for (int x = 0; x < collision.lengthX; x++)
-            {
-                for (int y = 0; y < collision.lengthY; y++)
-                {
-                    newCollision.collision[x, y] = collision.collision[collision.lengthY - 1 - y, x];
-                }
-            }
+            BlockHitbox newHitbox = new BlockHitbox(hitbox.Width, hitbox.Height);
 
-            for (int newCollisionY = 0; newCollisionY < newCollision.lengthY; newCollisionY++)
-            {
-                for (int newCollisionX = 0; newCollisionX < newCollision.lengthX; newCollisionX++)
-                {
+            for (int x = 0; x < hitbox.Width; x++)
+                for (int y = 0; y < hitbox.Height; y++)
+                    newHitbox.hitbox[x, y] = hitbox.hitbox[hitbox.Height - 1 - y, x];
+
+            for (int newHitboxY = 0; newHitboxY < newHitbox.Height; newHitboxY++)
+                for (int newHitboxX = 0; newHitboxX < newHitbox.Width; newHitboxX++)
                     for (int n = 0; n < tetris.blocks.Length; n++)
-                    {
                         if (this != tetris.blocks[n])
-                        {
-                            for (int collisionY = 0; collisionY < tetris.blocks[n].collision.lengthY; collisionY++)
-                            {
-                                for (int collisionX = 0; collisionX < tetris.blocks[n].collision.lengthX; collisionX++)
-                                {
-                                    if (tetris.blocks[n].cordinate.y + collisionY == cordinate.y + newCollisionY &&
-                                        tetris.blocks[n].cordinate.x + collisionX == cordinate.x + newCollisionX)
-                                    {
-
+                            for (int hitboxY = 0; hitboxY < tetris.blocks[n].hitbox.Height; hitboxY++)
+                                for (int hitboxX = 0; hitboxX < tetris.blocks[n].hitbox.Width; hitboxX++)
+                                    if (tetris.blocks[n].cordinate.Y + hitboxY == cordinate.Y + newHitboxY &&
+                                        tetris.blocks[n].cordinate.X + hitboxX == cordinate.X + newHitboxX)
                                         flag = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
 
-
-            if (cordinate.x + newCollision.lengthX > tetris.lengthX)
-            {
+            if (cordinate.X + newHitbox.Width > tetris.width)
                 flag = false;
-            }
 
-            if (cordinate.y + newCollision.lengthY > tetris.lengthY)
-            {
+            if (cordinate.Y + newHitbox.Height > tetris.height)
                 flag = false;
-            }
 
             if (flag)
-            {
-                collision = newCollision;
-            }
-        } // DONE
+                hitbox = newHitbox;
+        }
     };
 
 }
