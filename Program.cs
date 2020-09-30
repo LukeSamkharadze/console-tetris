@@ -22,6 +22,7 @@ namespace ConsoleApp1
             }
 
             System.Console.Write("Game Over");
+
             System.Threading.Thread.Sleep(1750);
         }
     };

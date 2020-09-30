@@ -6,34 +6,31 @@ namespace ConsoleTetris.Block
 {
     public struct BlockHitbox
     {
-        public bool[,] collision;
-        public int lengthY;
-        public int lengthX;
+        public bool[,] hitbox;
 
-        public BlockHitbox(int lengthY, int lengthX)
+        public int Height { get; }
+        public int Width { get; }
+
+        public BlockHitbox(int height, int width)
         {
-            this.lengthY = lengthY;
-            this.lengthX = lengthX;
+            Height = height;
+            Width = width;
 
-            collision = new bool[lengthY, lengthX];
+            hitbox = new bool[height, width];
 
-            for (int y = 0; y < lengthY; y++)
-            {
-                for (int x = 0; x < lengthX; x++)
-                {
-                    collision[y, x] = true;
-                }
-            }
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                    hitbox[y, x] = true;
         }
 
-        public BlockHitbox(int lengthY_, int lengthX_, bool[,] collision_)
+        public BlockHitbox(int height, int width, bool[,] collision_)
         {
-            lengthY = lengthY_;
-            lengthX = lengthX_;
+            Height = height;
+            Width = width;
 
-            collision = new bool[lengthY, lengthX];
+            hitbox = new bool[Height, Width];
 
-            collision = collision_;
+            hitbox = collision_;
         }
     }
 
