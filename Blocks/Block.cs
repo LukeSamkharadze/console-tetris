@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ConsoleTetris.Block
+namespace ConsoleTetris.Blocks
 {
     public class Block
     {
@@ -16,7 +16,7 @@ namespace ConsoleTetris.Block
 
             hitbox = tetris.collisions[new System.Random().Next(0, tetris.collisions.Length)];
 
-            cordinate = new Cordinate(new System.Random().Next(0, tetris.width - hitbox.Width + 1), -hitbox.Height + 1);
+            cordinate = new Cordinate(new System.Random().Next(0, tetris.Width - hitbox.Width + 1), -hitbox.Height + 1);
         }
 
         public void Fall()
@@ -39,7 +39,7 @@ namespace ConsoleTetris.Block
                                                 return;
                                             }
 
-            if (cordinate.Y + hitbox.Height - 1 == tetris.height - 1)
+            if (cordinate.Y + hitbox.Height - 1 == tetris.Height - 1)
             {
                 tetris.CreateBlock();
                 return;
@@ -67,7 +67,7 @@ namespace ConsoleTetris.Block
                                                 cordinate.Y + hitboxY == tetris.blocks[n].cordinate.Y + hitboxYY)
                                                 return;
 
-            if (cordinate.X + hitbox.Width * (dX[input] + 1) / 2 != tetris.width * (dX[input]+1)/2)
+            if (cordinate.X + hitbox.Width * (dX[input] + 1) / 2 != tetris.Width * (dX[input]+1)/2)
                 cordinate.X += dX[input];
         }
 
@@ -91,10 +91,10 @@ namespace ConsoleTetris.Block
                                         tetris.blocks[n].cordinate.X + hitboxX == cordinate.X + newHitboxX)
                                         flag = false;
 
-            if (cordinate.X + newHitbox.Width > tetris.width)
+            if (cordinate.X + newHitbox.Width > tetris.Width)
                 flag = false;
 
-            if (cordinate.Y + newHitbox.Height > tetris.height)
+            if (cordinate.Y + newHitbox.Height > tetris.Height)
                 flag = false;
 
             if (flag)

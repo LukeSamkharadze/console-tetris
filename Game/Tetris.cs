@@ -1,4 +1,4 @@
-﻿using ConsoleTetris.Block;
+﻿using ConsoleTetris.Blocks;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,21 +8,22 @@ namespace ConsoleTetris
 {
     public class Tetris
     {
+        public int Height { get; private set; }
+        public int Width { get; private set; }
+
+        public bool IsGameOver { get; private set; }
+
         public BlockHitbox[] collisions;
-
-        public int height;
-        public int width;
-
-        public bool isGameOver;
-
-        public Block.Block[] blocks = new Block.Block[0];
+        public Block[] blocks;
 
         public Tetris(int lengthY, int lengthX)
         {
-            isGameOver = false;
+            IsGameOver = false;
 
-            this.height = lengthY;
-            this.width = lengthX;
+            this.Height = lengthY;
+            this.Width = lengthX;
+
+            blocks = new Block[0];
 
             collisions = new BlockHitbox[]
             {
@@ -40,16 +41,16 @@ namespace ConsoleTetris
         {
             bool flag;
 
-            for (int x = 0; x < width + 2; x++)
+            for (int x = 0; x < Width + 2; x++)
                 System.Console.Write("■ ");
 
             System.Console.Write("\n");
 
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < Height; y++)
             {
                 System.Console.Write("■ ");
 
-                for (int x = 0; x < width; x++)
+                for (int x = 0; x < Width; x++)
                 {
                     flag = true;
 
@@ -71,7 +72,7 @@ namespace ConsoleTetris
                 System.Console.Write("■\n");
             }
 
-            for (int x = 0; x < width + 2; x++)
+            for (int x = 0; x < Width + 2; x++)
                 System.Console.Write("■ ");
 
             System.Console.Write("\nSCORE : {0}", blocks.Length);
@@ -81,9 +82,9 @@ namespace ConsoleTetris
         {
             CheckLines();
 
-            System.Array.Resize<Block.Block>(ref blocks, blocks.Length + 1);
+            System.Array.Resize<Blocks.Block>(ref blocks, blocks.Length + 1);
 
-            blocks[blocks.Length - 1] = new Block.Block(this);
+            blocks[blocks.Length - 1] = new Blocks.Block(this);
 
             CheckLose();
         }
@@ -97,7 +98,7 @@ namespace ConsoleTetris
         {
             var thread = new Thread(() =>
             {
-                while (isGameOver == false)
+                while (IsGameOver == false)
                 {
                     char input = System.Console.ReadKey(true).KeyChar;
 
@@ -116,7 +117,7 @@ namespace ConsoleTetris
 
         public void CheckLines()
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < Height; y++)
             {
                 bool[] blocksThatLostPiece = new bool[blocks.Length];
 
@@ -136,7 +137,7 @@ namespace ConsoleTetris
                             blocksThatLostPiece[n] = true;
                         }
 
-                if (counter == width)
+                if (counter == Width)
                     for (int n = 0; n < blocks.Length; n++)
                         if (blocksThatLostPiece[n] == true)
                         {
@@ -155,7 +156,7 @@ namespace ConsoleTetris
         {
             if (blocks.Length > 1)
                 if (blocks[blocks.Length - 2].cordinate.Y < 0)
-                    isGameOver = true;
+                    IsGameOver = true;
         }
 
         public void ChangeCollisionAndCordinate(int n)

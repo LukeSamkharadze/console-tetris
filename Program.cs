@@ -12,7 +12,7 @@ namespace ConsoleApp1
             tetris.CreateBlock();
             tetris.StartGettingInput();
 
-            while (tetris.isGameOver == false)
+            while (tetris.IsGameOver == false)
             {
                 tetris.PrintGame();
                 tetris.FallBlock();

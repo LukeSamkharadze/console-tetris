@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ConsoleTetris.Block
+namespace ConsoleTetris.Blocks
 {
     public struct BlockHitbox
     {
